@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="KAIBLA - A modern web proxy browser with tabs, bookmarks, and session management.">
+    <title>KAIBLA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/index.css">
+    <!-- UV Bundle must load before config (defines Ultraviolet global) -->
+    <script src="/uv/uv.bundle.js"></script>
+    <script src="/uv/uv.config.js"></script>
+    <script src="/register-sw.js"></script>
+    <script src="/search.js"></script>
+</head>
+<body>
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- TAB BAR                                     -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div id="tab-bar">
+        <div id="tab-list"></div>
+        <button id="btn-new-tab" title="New Tab (Ctrl+T)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+        </button>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- NAVIGATION BAR                              -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div id="nav-bar">
+        <div id="nav-controls">
+            <button id="btn-back" class="nav-btn" title="Back (Alt+←)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+            <button id="btn-forward" class="nav-btn" title="Forward (Alt+→)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+            <button id="btn-reload" class="nav-btn" title="Reload (Ctrl+R)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                </svg>
+            </button>
+        </div>
+
+        <form id="url-form" autocomplete="off">
+            <div id="url-input-wrapper">
+                <svg id="url-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="url-input" placeholder="Search or enter URL..." spellcheck="false" autofocus>
+                <div id="loading-indicator">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </form>
+
+        <div id="nav-actions">
+            <button id="btn-bookmark" class="nav-btn" title="Bookmark this page (Ctrl+D)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                </svg>
+            </button>
+            <button id="btn-settings" class="nav-btn" title="Settings">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- BOOKMARKS BAR                               -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div id="bookmarks-bar">
+        <div id="bookmarks-list"></div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SETTINGS PANEL (slide-out)                  -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div id="settings-overlay" class="hidden"></div>
+    <div id="settings-panel" class="hidden">
+        <div class="settings-header">
+            <h2>Settings</h2>
+            <button id="btn-close-settings" class="nav-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="settings-body">
+            <div class="settings-group">
+                <label class="settings-label">Search Engine</label>
+                <select id="setting-search-engine">
+                    <option value="https://www.google.com/search?q=%s">Google</option>
+                    <option value="https://duckduckgo.com/?q=%s">DuckDuckGo</option>
+                    <option value="https://www.bing.com/search?q=%s">Bing</option>
+                    <option value="https://search.yahoo.com/search?p=%s">Yahoo</option>
+                    <option value="https://search.brave.com/search?q=%s">Brave Search</option>
+                </select>
+            </div>
+            <div class="settings-group">
+                <label class="settings-label">Theme</label>
+                <select id="setting-theme">
+                    <option value="dark">Dark (Default)</option>
+                    <option value="midnight">Midnight</option>
+                    <option value="light">Light</option>
+                </select>
+            </div>
+            <div class="settings-group">
+                <label class="settings-label">Bookmarks Bar</label>
+                <select id="setting-bookmarks-bar">
+                    <option value="show">Always Show</option>
+                    <option value="hide">Hide</option>
+                </select>
+            </div>
+            <div class="settings-divider"></div>
+            <div class="settings-group">
+                <label class="settings-label">Data Management</label>
+                <button id="btn-clear-history" class="settings-btn danger">Clear Browsing History</button>
+                <button id="btn-clear-bookmarks" class="settings-btn danger">Clear All Bookmarks</button>
+                <button id="btn-clear-all" class="settings-btn danger">Reset Everything</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- BROWSER VIEWPORT (iframes live here)        -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div id="viewport">
+        <!-- New Tab / Home Page -->
+        <div id="home-page" class="active">
+            <div class="home-content">
+                <div class="home-logo">
+                    <div class="logo-glow"></div>
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="url(#logoGrad)" stroke-width="1.5">
+                        <defs>
+                            <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#818cf8"/>
+                                <stop offset="100%" style="stop-color:#c084fc"/>
+                            </linearGradient>
+                        </defs>
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                    </svg>
+                    <h1>KAIBLA</h1>
+                </div>
+                <form id="home-search-form" autocomplete="off">
+                    <input type="text" id="home-search-input" placeholder="Search the web or enter a URL..." spellcheck="false">
+                </form>
+                <div id="home-shortcuts">
+                    <!-- Populated by JS -->
+                </div>
+                <div id="home-recent">
+                    <h3>Recent History</h3>
+                    <div id="home-history-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Page (hidden by default) -->
+        <div id="error-page" class="hidden">
+            <div class="error-content">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="1.5">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="15" y1="9" x2="9" y2="15"/>
+                    <line x1="9" y1="9" x2="15" y2="15"/>
+                </svg>
+                <h2>This page can't be reached</h2>
+                <p id="error-message">The site may be down or the URL may be incorrect.</p>
+                <button id="btn-error-retry" class="home-btn">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SCRIPTS                                     -->
+    <!-- ═══════════════════════════════════════════ -->
+    <script src="/baremux/index.js"></script>
+    <script src="/app.js"></script>
+</body>
+</html>

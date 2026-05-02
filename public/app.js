@@ -239,7 +239,8 @@ async function navigateTab(tabId, rawUrl) {
         await registerSW();
 
         // Setup transport
-        const wispUrl = (location.protocol === "https:" ? "wss" : "ws") + "://" + location.host + "/wisp/";
+      const PROXY_ORIGIN = "https://prozy.fly.dev";
+        const wispUrl = PROXY_ORIGIN.replace("https://", "wss://").replace("http://", "ws://") + "/wisp/";
         if ((await connection.getTransport()) !== "/epoxy/index.mjs") {
             await connection.setTransport("/epoxy/index.mjs", [{ wisp: wispUrl }]);
         }
